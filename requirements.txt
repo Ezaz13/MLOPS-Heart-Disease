@@ -1,0 +1,7 @@
+requests
+numpy==1.26.4
+pandas==2.1.4
+great-expectations==0.18.21
+matplotlib
+seaborn
+sklearn
