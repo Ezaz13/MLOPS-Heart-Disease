@@ -1,12 +1,6 @@
 """
 Model Training & Experiment Tracking using MLflow
 Heart Disease Prediction Project
-
-- Loads transformed dataset
-- Builds preprocessing + model pipeline
-- Trains Random Forest classifier
-- Logs parameters, metrics, artifacts
-- Registers model in MLflow Model Registry
 """
 
 import pandas as pd
@@ -33,15 +27,14 @@ from sklearn.metrics import (
 # ------------------------------------------------------------------
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_PATH = PROJECT_ROOT / "data" / "transformed" / "transformed_heart_data.csv"
-MLRUNS_PATH = PROJECT_ROOT / "mlruns"
 
 # ------------------------------------------------------------------
-# MLflow config
+# MLflow config (PORTABLE)
 # ------------------------------------------------------------------
 EXPERIMENT_NAME = "Heart Disease Prediction"
 REGISTERED_MODEL_NAME = "HeartDiseaseModel"
 
-mlflow.set_tracking_uri(f"file:///{MLRUNS_PATH.as_posix()}")
+mlflow.set_tracking_uri("file:///mlruns")
 mlflow.set_experiment(EXPERIMENT_NAME)
 
 # ------------------------------------------------------------------
@@ -58,18 +51,19 @@ def prepare_data(df: pd.DataFrame):
     y = df["target"]
 
     return train_test_split(
-        X, y,
+        X,
+        y,
         test_size=0.2,
         random_state=42,
         stratify=y
     )
 
 # ------------------------------------------------------------------
-# Pipeline
+# Model Pipeline
 # ------------------------------------------------------------------
 def build_pipeline(X: pd.DataFrame) -> Pipeline:
-    numeric_features = X.select_dtypes(include=["int64", "float64"]).columns
-    categorical_features = X.select_dtypes(include=["object", "category"]).columns
+    numeric_features = X.select_dtypes(include=["int64", "float64"]).columns.tolist()
+    categorical_features = X.select_dtypes(include=["object", "category"]).columns.tolist()
 
     numeric_pipeline = Pipeline([
         ("imputer", SimpleImputer(strategy="median")),
@@ -81,15 +75,19 @@ def build_pipeline(X: pd.DataFrame) -> Pipeline:
         ("encoder", OneHotEncoder(handle_unknown="ignore"))
     ])
 
-    preprocessor = ColumnTransformer([
-        ("num", numeric_pipeline, numeric_features),
-        ("cat", categorical_pipeline, categorical_features),
-    ])
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ("num", numeric_pipeline, numeric_features),
+            ("cat", categorical_pipeline, categorical_features),
+        ],
+        remainder="drop"
+    )
 
     classifier = RandomForestClassifier(
         n_estimators=200,
         random_state=42,
-        class_weight="balanced"
+        class_weight="balanced",
+        n_jobs=-1
     )
 
     return Pipeline([
@@ -104,7 +102,7 @@ def main():
     print("Starting MLflow training pipeline...")
 
     if not DATA_PATH.exists():
-        raise FileNotFoundError(f"Data not found at {DATA_PATH}")
+        raise FileNotFoundError(f"Dataset not found at {DATA_PATH}")
 
     df = pd.read_csv(DATA_PATH)
 
@@ -129,14 +127,14 @@ def main():
         }
 
         mlflow.log_metrics(metrics)
-
         mlflow.log_params({
             "model_type": "RandomForestClassifier",
             "n_estimators": 200,
             "random_state": 42,
+            "class_weight": "balanced"
         })
 
-        # ✅ Correct way to log & register model
+        # Log & register full pipeline
         mlflow.sklearn.log_model(
             sk_model=pipeline,
             artifact_path="model",

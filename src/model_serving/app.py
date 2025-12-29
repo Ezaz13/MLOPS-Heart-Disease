@@ -11,12 +11,15 @@ import mlflow.sklearn
 BASE_DIR = pathlib.Path(__file__).resolve().parents[2]
 MLRUNS_PATH = BASE_DIR / "mlruns"
 
-mlflow.set_tracking_uri(f"file:///{MLRUNS_PATH.as_posix()}")
+# mlflow.set_tracking_uri(f"file:///{MLRUNS_PATH.as_posix()}")
+mlflow.set_tracking_uri("file:///mlruns")
+MODEL_URI = "models:/HeartDiseaseModel/latest"
 
-MODEL_URI = os.getenv(
-    "MODEL_URI",
-    "models:/HeartDiseaseModel/latest"
-)
+#
+# MODEL_URI = os.getenv(
+#     "MODEL_URI",
+#     "models:/HeartDiseaseModel/latest"
+# )
 
 # -------------------------------------------------
 # Flask App
@@ -135,4 +138,4 @@ def predict():
 # -------------------------------------------------
 if __name__ == "__main__":
     load_model()
-    app.run(host="0.0.0.0", port=9696, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
