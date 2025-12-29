@@ -1,7 +1,7 @@
 import unittest
 import pandas as pd
 import numpy as np
-from src.data_transformation_and_storage.transformation import perform_feature_engineering
+from src.data_transformation.transformation import perform_feature_engineering
 
 class TestTransformation(unittest.TestCase):
     def setUp(self):

@@ -12,7 +12,7 @@ from src.utility.exception import CustomException
 from src.utility.logger import setup_logging
 
 # Setup logging
-logger = setup_logging("data_transformation_and_storage")
+logger = setup_logging("data_transformation")
 
 # Define path for the input CSV file
 prepared_csv_file = os.path.join(PROJECT_ROOT, "data", "prepared", "prepared_heart_data_latest.csv")

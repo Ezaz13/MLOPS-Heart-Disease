@@ -70,7 +70,7 @@ def dmml_pipeline():
     ingestion_script = PROJECT_ROOT / "src" / "data_ingestion" / "ingestion.py"
     validation_script = PROJECT_ROOT / "src" / "data_validation" / "validation.py"
     preparation_script = PROJECT_ROOT / "src" / "data_preparation" / "preparation.py"
-    transformation_script = PROJECT_ROOT / "src" / "data_transformation_and_storage" / "transformation.py"
+    transformation_script = PROJECT_ROOT / "src" / "data_transformation" / "transformation.py"
     versioning_script = PROJECT_ROOT / "src" / "data_versioning" / "version_data.py"
     model_building_script = PROJECT_ROOT / "src" / "model_building" / "train_model.py"
 

@@ -16,7 +16,7 @@ from sqlite3 import Error
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 
-from src.data_transformation_and_storage.transformation import DatabaseConfig
+from src.data_transformation.transformation import DatabaseConfig
 from src.utility.logger import setup_logging
 
 # Setup logging

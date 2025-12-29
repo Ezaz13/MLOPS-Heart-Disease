@@ -1,5 +1,5 @@
 """
-Model Training & Experiment Tracking using MLflow
+Model Training & Experiment Tracking using MLflow (SQLite Backend)
 Heart Disease Prediction Project
 """
 
@@ -29,12 +29,13 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_PATH = PROJECT_ROOT / "data" / "transformed" / "transformed_heart_data.csv"
 
 # ------------------------------------------------------------------
-# MLflow config (PORTABLE)
+# MLflow Configuration (DATABASE BACKEND)
 # ------------------------------------------------------------------
+MLFLOW_TRACKING_URI = "sqlite:///mlflow.db"
 EXPERIMENT_NAME = "Heart Disease Prediction"
 REGISTERED_MODEL_NAME = "HeartDiseaseModel"
 
-mlflow.set_tracking_uri("file:///mlruns")
+mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 mlflow.set_experiment(EXPERIMENT_NAME)
 
 # ------------------------------------------------------------------
@@ -79,8 +80,7 @@ def build_pipeline(X: pd.DataFrame) -> Pipeline:
         transformers=[
             ("num", numeric_pipeline, numeric_features),
             ("cat", categorical_pipeline, categorical_features),
-        ],
-        remainder="drop"
+        ]
     )
 
     classifier = RandomForestClassifier(
@@ -111,22 +111,19 @@ def main():
 
     with mlflow.start_run(run_name="RandomForest"):
 
-        # Train
         pipeline.fit(X_train, y_train)
 
-        # Evaluate
         preds = pipeline.predict(X_test)
         probs = pipeline.predict_proba(X_test)[:, 1]
 
-        metrics = {
+        mlflow.log_metrics({
             "accuracy": accuracy_score(y_test, preds),
             "precision": precision_score(y_test, preds),
             "recall": recall_score(y_test, preds),
             "f1_score": f1_score(y_test, preds),
             "roc_auc": roc_auc_score(y_test, probs),
-        }
+        })
 
-        mlflow.log_metrics(metrics)
         mlflow.log_params({
             "model_type": "RandomForestClassifier",
             "n_estimators": 200,
@@ -134,7 +131,7 @@ def main():
             "class_weight": "balanced"
         })
 
-        # Log & register full pipeline
+        # Log & Register model
         mlflow.sklearn.log_model(
             sk_model=pipeline,
             artifact_path="model",
@@ -143,7 +140,6 @@ def main():
         )
 
         print("Model trained and registered successfully")
-        print("Metrics:", metrics)
 
     print("Training pipeline completed")
 

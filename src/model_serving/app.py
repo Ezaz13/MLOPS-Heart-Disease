@@ -6,20 +6,17 @@ import mlflow
 import mlflow.sklearn
 
 # -------------------------------------------------
-# Paths & MLflow
+# Paths & MLflow (DB BACKEND ONLY CHANGE)
 # -------------------------------------------------
 BASE_DIR = pathlib.Path(__file__).resolve().parents[2]
-MLRUNS_PATH = BASE_DIR / "mlruns"
 
-# mlflow.set_tracking_uri(f"file:///{MLRUNS_PATH.as_posix()}")
-mlflow.set_tracking_uri("file:///mlruns")
+# ❌ OLD (filesystem – deprecated)
+# mlflow.set_tracking_uri("file:///mlruns")
+
+# ✅ NEW (SQLite database backend)
+mlflow.set_tracking_uri("sqlite:///mlflow.db")
+
 MODEL_URI = "models:/HeartDiseaseModel/latest"
-
-#
-# MODEL_URI = os.getenv(
-#     "MODEL_URI",
-#     "models:/HeartDiseaseModel/latest"
-# )
 
 # -------------------------------------------------
 # Flask App
@@ -30,7 +27,9 @@ model = None
 # Categorical features used during training
 CATEGORICAL_FEATURES = ["thal"]
 
-
+# -------------------------------------------------
+# Load model
+# -------------------------------------------------
 def load_model():
     global model
     try:
@@ -40,14 +39,12 @@ def load_model():
         model = None
         app.logger.error(f"Failed to load model: {e}")
 
-
 # -------------------------------------------------
 # UI
 # -------------------------------------------------
 @app.route("/", methods=["GET"])
 def index():
     return render_template("index.html")
-
 
 # -------------------------------------------------
 # Health
@@ -59,7 +56,6 @@ def health():
         "model_loaded": model is not None,
         "model_uri": MODEL_URI
     })
-
 
 # -------------------------------------------------
 # Prediction
@@ -79,43 +75,37 @@ def predict():
         # ---------------------------------------------------------
         # 1. Data Mapping (Form values -> Model training standards)
         # ---------------------------------------------------------
-        # Map 'cp' (0-3) to (1-4)
         if 'cp' in df.columns:
             df['cp'] = df['cp'].map({0: 1, 1: 2, 2: 3, 3: 4})
-        
-        # Map 'slope' (0-2) to (1-3)
+
         if 'slope' in df.columns:
             df['slope'] = df['slope'].map({0: 1, 1: 2, 2: 3})
-            
-        # Map 'thal' (1-3) to (3, 6, 7)
+
         if 'thal' in df.columns:
             df['thal'] = df['thal'].map({1: 3, 2: 6, 3: 7})
 
         # ---------------------------------------------------------
-        # 2. Feature Engineering (Replicating transformation pipeline)
+        # 2. Feature Engineering
         # ---------------------------------------------------------
-        # Calculate interaction terms expected by the model
         df['rate_pressure_product'] = df['trestbps'] * df['thalach']
         df['chol_fbs_interaction'] = df['chol'] * df['fbs']
-        
-        # Placeholder for 'is_high_risk' (logic unknown, defaulting to 0 to prevent crash)
         df['is_high_risk'] = 0
 
         # ---------------------------------------------------------
         # 3. One-Hot Encoding & Alignment
         # ---------------------------------------------------------
-        # Convert categoricals to float to match column names like 'sex_1.0'
         cat_cols = ["sex", "cp", "fbs", "restecg", "exang", "slope", "thal"]
         for col in cat_cols:
             if col in df.columns:
                 df[col] = df[col].astype(float)
 
-        # Apply One-Hot Encoding
         df_processed = pd.get_dummies(df, columns=cat_cols)
 
-        # Align columns with model (fill missing OHE columns with 0)
         if hasattr(model, "feature_names_in_"):
-            df_processed = df_processed.reindex(columns=model.feature_names_in_, fill_value=0)
+            df_processed = df_processed.reindex(
+                columns=model.feature_names_in_,
+                fill_value=0
+            )
 
         preds = model.predict(df_processed)
         probs = model.predict_proba(df_processed)[:, 1]
@@ -131,7 +121,6 @@ def predict():
             "error": "Inference failed",
             "details": str(e)
         }), 400
-
 
 # -------------------------------------------------
 # Entrypoint
