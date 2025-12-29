@@ -1,49 +1,55 @@
 # Model Performance Report
 
-*Report generated on: 2025-08-24 03:33:05
-*MLflow Experiment: 'Customer Churn Prediction'
+*Report generated on: 2025-12-29 12:46:36
+*MLflow Experiment: 'Heart Disease Prediction'
 
 ## Logistic Regression
 
-- **MLflow Run ID**: `f60d533f0ee94d878a2379eebbea2fe1`
-- **Accuracy**: 0.7935
-- **Precision**: 0.6379
-- **Recall**: 0.5134
-- **F1-Score**: 0.5689
+- **MLflow Run ID**: `18279d95d8b64c1da0c46cee5ddd0742`
+- **Best Params**: `{'C': 0.1, 'solver': 'liblinear'}`
+- **CV Accuracy (Mean)**: 0.8345
+- **Test Accuracy**: 0.8852
+- **Precision**: 0.8387
+- **Recall**: 0.9286
+- **F1-Score**: 0.8814
+- **ROC-AUC**: 0.9621
 
 ### Classification Report
 
 ```
               precision    recall  f1-score   support
 
-           0       0.84      0.89      0.86      2070
-           1       0.64      0.51      0.57       748
+           0       0.93      0.85      0.89        33
+           1       0.84      0.93      0.88        28
 
-    accuracy                           0.79      2818
-   macro avg       0.74      0.70      0.72      2818
-weighted avg       0.78      0.79      0.79      2818
+    accuracy                           0.89        61
+   macro avg       0.89      0.89      0.89        61
+weighted avg       0.89      0.89      0.89        61
 
 ```
 
 ## Random Forest
 
-- **MLflow Run ID**: `2e682da445fa458f90649fecd8ad286c`
-- **Accuracy**: 0.9514
-- **Precision**: 0.9261
-- **Recall**: 0.8877
-- **F1-Score**: 0.9065
+- **MLflow Run ID**: `782a6aafd1d44b91ac72188107a8b975`
+- **Best Params**: `{'max_depth': 10, 'min_samples_split': 2, 'n_estimators': 100}`
+- **CV Accuracy (Mean)**: 0.8136
+- **Test Accuracy**: 0.8852
+- **Precision**: 0.8387
+- **Recall**: 0.9286
+- **F1-Score**: 0.8814
+- **ROC-AUC**: 0.9394
 
 ### Classification Report
 
 ```
               precision    recall  f1-score   support
 
-           0       0.96      0.97      0.97      2070
-           1       0.93      0.89      0.91       748
+           0       0.93      0.85      0.89        33
+           1       0.84      0.93      0.88        28
 
-    accuracy                           0.95      2818
-   macro avg       0.94      0.93      0.94      2818
-weighted avg       0.95      0.95      0.95      2818
+    accuracy                           0.89        61
+   macro avg       0.89      0.89      0.89        61
+weighted avg       0.89      0.89      0.89        61
 
 ```
 

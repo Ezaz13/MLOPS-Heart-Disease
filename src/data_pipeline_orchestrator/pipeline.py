@@ -78,8 +78,8 @@ def dmml_pipeline():
     validation_result = run_script(script_path=validation_script, task_name="Data Validation", upstream_result=ingestion_result)
     preparation_result = run_script(script_path=preparation_script, task_name="Data Preparation", upstream_result=validation_result)
     transformation_result = run_script(script_path=transformation_script, task_name="Data Transformation", upstream_result=preparation_result)
-    versioning_result = run_script(script_path=versioning_script, task_name="Data Versioning", upstream_result=transformation_result)
-    model_building_result = run_script(script_path=model_building_script, task_name="Model Building", upstream_result=versioning_result)
+    # versioning_result = run_script(script_path=versioning_script, task_name="Data Versioning", upstream_result=transformation_result)
+    model_building_result = run_script(script_path=model_building_script, task_name="Model Building", upstream_result=transformation_result)
 
     logger.info("====== Prefect Pipeline Flow Finished Successfully ======")
 

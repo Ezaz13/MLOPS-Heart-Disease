@@ -1,5 +1,5 @@
 """
-Feature Retrieval for the Customer Churn Prediction Model.
+Feature Retrieval for the Heart Disease Prediction Model.
 
 This module provides functions to retrieve engineered features from the SQLite
 database, which acts as our feature store. It allows for easy access to
@@ -16,7 +16,7 @@ from sqlite3 import Error
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 
-from src.data_transformation_and_storage.sql import DatabaseConfig
+from src.data_transformation_and_storage.transformation import DatabaseConfig
 from src.utility.logger import setup_logging
 
 # Setup logging
@@ -84,7 +84,7 @@ if __name__ == '__main__':
     # --- 2. Retrieve a specific subset of features ---
     print("\n2. Retrieving a specific list of features for inference...")
     try:
-        specific_features = ["tenure", "MonthlyCharges", "charge_ratio", "is_high_value", "Churn"]
+        specific_features = ["age", "thalach", "rate_pressure_product", "is_high_risk", "target"]
         print(f"Requesting features: {specific_features}")
         
         specific_features_df = get_features_for_training(feature_list=specific_features)
@@ -103,10 +103,10 @@ if __name__ == '__main__':
         all_definitions = get_feature_definitions()
         print(f"Total number of defined features: {len(all_definitions)}")
         
-        print("\nSample feature definition for 'charge_ratio':")
-        charge_ratio_def = next((f for f in all_definitions if f['name'] == 'charge_ratio'), None)
-        if charge_ratio_def:
-            for key, value in charge_ratio_def.items():
+        print("\nSample feature definition for 'rate_pressure_product':")
+        rpp_def = next((f for f in all_definitions if f['name'] == 'rate_pressure_product'), None)
+        if rpp_def:
+            for key, value in rpp_def.items():
                 print(f"  - {key}: {value}")
     except Exception as e:
         print(f"An error occurred while accessing metadata: {e}")
