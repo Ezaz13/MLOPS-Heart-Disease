@@ -39,6 +39,7 @@ def run_script(script_path: Path, task_name: str, upstream_result: Any = None) -
     # Force the subprocess to use UTF-8 for its own console output.
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"
+    env["PYTHONPATH"] = str(PROJECT_ROOT)
 
     try:
         # Run the script without capturing output. Let it print directly to the console.
