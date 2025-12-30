@@ -7,6 +7,7 @@ from flask import Flask, request, jsonify, render_template
 import mlflow
 import mlflow.sklearn
 from mlflow.tracking import MlflowClient
+from prometheus_flask_exporter import PrometheusMetrics
 
 # -------------------------------------------------
 # Paths & MLflow (DB BACKEND ONLY CHANGE)
@@ -27,7 +28,7 @@ MODEL_URI = "models:/HeartDiseaseModel/latest"
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 model = None
-
+metrics = PrometheusMetrics(app)
 # Categorical features used during training
 CATEGORICAL_FEATURES = ["thal"]
 
