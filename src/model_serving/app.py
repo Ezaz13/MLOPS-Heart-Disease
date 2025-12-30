@@ -1,13 +1,15 @@
 import os
 import pathlib
-
-import app
+import logging
+import sys
 import pandas as pd
 from flask import Flask, request, jsonify, render_template
 import mlflow
 import mlflow.sklearn
 from mlflow.tracking import MlflowClient
 from prometheus_flask_exporter import PrometheusMetrics
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+from flask import Response
 
 # -------------------------------------------------
 # Paths & MLflow (DB BACKEND ONLY CHANGE)
@@ -104,6 +106,11 @@ def load_model():
 # -------------------------------------------------
 # UI
 # -------------------------------------------------
+
+@app.route("/metrics")
+def metrics_endpoint():
+    return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
+
 @app.route("/", methods=["GET"])
 def index():
     return render_template("index.html")
@@ -130,6 +137,9 @@ def predict():
     data = request.get_json()
     if data is None:
         return jsonify({"error": "Invalid JSON payload"}), 400
+
+    app.logger.info("Starting inference...")
+    app.logger.info(f"Received prediction parameters: {data}")
 
     try:
         df = pd.DataFrame([data])
@@ -172,6 +182,8 @@ def predict():
         preds = model.predict(df_processed)
         probs = model.predict_proba(df_processed)[:, 1]
 
+        app.logger.info(f"Prediction: {int(preds[0])}, Confidence: {float(probs[0])}")
+
         return jsonify([{
             "prediction": int(preds[0]),
             "confidence": float(probs[0])
@@ -184,9 +196,17 @@ def predict():
             "details": str(e)
         }), 400
 
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+
+app.logger.setLevel(logging.INFO)
 # -------------------------------------------------
 # Entrypoint
 # -------------------------------------------------
 if __name__ == "__main__":
     load_model()
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)

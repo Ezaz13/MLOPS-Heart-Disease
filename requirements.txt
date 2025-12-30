@@ -32,3 +32,4 @@ pytest
 flake8
 mlflow-skinny
 prometheus-flask-exporter
+prometheus-client
