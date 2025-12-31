@@ -1,0 +1,48 @@
+[ 2025-12-31 11:39:41,235 ] 239 data_preparation - INFO - Starting Data Preparation Pipeline...
+[ 2025-12-31 11:39:41,235 ] 50 data_preparation - INFO - Loading dataset from local raw data folder...
+[ 2025-12-31 11:39:41,235 ] 55 data_preparation - INFO - Loading dataset: F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\data\raw\uci\heart_disease_dataset_20251231_113909.csv
+[ 2025-12-31 11:39:41,238 ] 58 data_preparation - INFO - Size of dataset: (303, 14)
+[ 2025-12-31 11:39:41,238 ] 72 data_preparation - INFO - Performing initial data cleaning...
+[ 2025-12-31 11:39:41,258 ] 92 data_preparation - INFO - Normalized target variable to binary (0: No Disease, 1: Disease).
+[ 2025-12-31 11:39:41,259 ] 100 data_preparation - INFO - Starting Enhanced Exploratory Data Analysis (EDA)...
+[ 2025-12-31 11:39:41,298 ] 108 data_preparation - INFO - Saved summary statistics to F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\artifacts\eda\eda_run_20251231_113941
+[ 2025-12-31 11:39:41,329 ] 121 data_preparation - INFO - Generating distribution plots for numeric features by Target...
+[ 2025-12-31 11:39:45,874 ] 130 data_preparation - INFO - Generating box plots for numeric features by Target...
+[ 2025-12-31 11:39:45,952 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:45,955 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:46,095 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:46,098 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:46,210 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:46,214 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:46,325 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:46,328 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:46,473 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:46,478 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:46,640 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:46,643 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:46,762 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:46,765 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:46,917 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:46,920 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:47,050 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:47,053 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:47,204 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:47,207 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:47,319 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:47,322 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:47,479 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:47,482 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:47,625 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:47,629 ] 223 matplotlib.category - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+[ 2025-12-31 11:39:47,678 ] 139 data_preparation - INFO - Generating count plots for categorical features by Target...
+[ 2025-12-31 11:39:47,678 ] 150 data_preparation - INFO - Generating correlation heatmap for numeric features...
+[ 2025-12-31 11:39:48,352 ] 167 data_preparation - INFO - Saved enhanced EDA visualizations to F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\artifacts\eda\eda_run_20251231_113941
+[ 2025-12-31 11:39:48,352 ] 174 data_preparation - INFO - Starting final preprocessing...
+[ 2025-12-31 11:39:48,356 ] 193 data_preparation - INFO - Imputed missing values in numeric features with median.
+[ 2025-12-31 11:39:48,360 ] 198 data_preparation - INFO - Imputed missing values in categorical columns with mode.
+[ 2025-12-31 11:39:48,362 ] 204 data_preparation - INFO - Standardized numerical attributes.
+[ 2025-12-31 11:39:48,366 ] 214 data_preparation - INFO - One-hot encoded categorical variables with 0/1 output.
+[ 2025-12-31 11:39:48,366 ] 217 data_preparation - INFO - Size of the final merged and preprocessed dataset: (303, 26)
+[ 2025-12-31 11:39:48,372 ] 226 data_preparation - INFO - Prepared dataset saved to: F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\data\prepared\prepared_heart_data_20251231_113948.csv
+[ 2025-12-31 11:39:48,376 ] 232 data_preparation - INFO - Latest prepared dataset copy saved to: F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\data\prepared\prepared_heart_data_latest.csv
+[ 2025-12-31 11:39:48,376 ] 256 data_preparation - INFO - Data Preparation Pipeline Completed Successfully.

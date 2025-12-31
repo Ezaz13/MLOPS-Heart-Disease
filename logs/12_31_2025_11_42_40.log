@@ -1,0 +1,8 @@
+[ 2025-12-31 11:42:40,553 ] 118 ingestion - INFO - Running UCI Heart Disease ingestion script as standalone process.
+[ 2025-12-31 11:42:40,553 ] 93 ingestion - INFO - --- Starting Data Ingestion Cycle ---
+[ 2025-12-31 11:42:40,553 ] 44 ingestion - INFO - Triggered data ingestion from UCI Machine Learning Repository...
+[ 2025-12-31 11:42:40,553 ] 45 ingestion - INFO - Downloading dataset from: https://archive.ics.uci.edu/ml/machine-learning-databases/heart-disease/processed.cleveland.data
+[ 2025-12-31 11:42:41,738 ] 68 ingestion - INFO - UCI Heart Disease dataset saved to 'F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\data/raw/uci\heart_disease_dataset_20251231_114240.csv'
+[ 2025-12-31 11:42:41,738 ] 74 ingestion - INFO - UCI data ingestion completed successfully.
+[ 2025-12-31 11:42:41,739 ] 95 ingestion - INFO - --- Data Ingestion Cycle Finished Successfully ---
+[ 2025-12-31 11:42:41,739 ] 122 ingestion - INFO - Data ingestion completed successfully.

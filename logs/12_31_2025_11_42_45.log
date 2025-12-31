@@ -1,0 +1,71 @@
+[ 2025-12-31 11:42:45,358 ] 237 data_validation_main - INFO - Starting data validation process for all configured local sources.
+[ 2025-12-31 11:42:45,360 ] 390 great_expectations.data_context.data_context.context_factory - INFO - Could not find local file-backed GX project
+[ 2025-12-31 11:42:45,361 ] 2153 great_expectations.data_context.types.base - INFO - Created temporary directory 'C:\Users\91798\AppData\Local\Temp\tmpd7hjqyer' for ephemeral docs site
+[ 2025-12-31 11:42:45,363 ] 187 great_expectations.datasource.fluent.config - INFO - Loading 'datasources' ->
+[]
+[ 2025-12-31 11:42:45,379 ] 60 LocalDataValidator_uci - INFO - Using Great Expectations configuration from: F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\gx
+[ 2025-12-31 11:42:45,380 ] 81 LocalDataValidator_uci - INFO - Creating fluent datasource local_pandas_datasource
+[ 2025-12-31 11:42:45,385 ] 83 LocalDataValidator_uci - INFO - Successfully created fluent datasource local_pandas_datasource
+[ 2025-12-31 11:42:45,385 ] 88 LocalDataValidator_uci - INFO - Searching for latest CSV file in: F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\data\raw\uci
+[ 2025-12-31 11:42:45,385 ] 93 LocalDataValidator_uci - INFO - Found latest local CSV file: F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\data\raw\uci\heart_disease_dataset_20251231_114240.csv
+[ 2025-12-31 11:42:45,385 ] 146 LocalDataValidator_uci - INFO - --- Starting GE validation for source: uci ---
+[ 2025-12-31 11:42:45,389 ] 161 LocalDataValidator_uci - INFO - Created new data asset: local_heart_data_uci
+[ 2025-12-31 11:42:45,390 ] 174 LocalDataValidator_uci - INFO - Created new expectation suite: heart_disease_suite
+[ 2025-12-31 11:42:45,416 ] 100 LocalDataValidator_uci - INFO - Building comprehensive expectation suite.
+[ 2025-12-31 11:42:45,417 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,427 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,437 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,448 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,459 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,478 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,497 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,515 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,534 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,552 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,569 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,586 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,602 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,623 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,644 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,662 ] 109 py.warnings - WARNING - F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\.venv\lib\site-packages\great_expectations\expectations\expectation.py:1519: UserWarning: `result_format` configured at the Validator-level will not be persisted. Please add the configuration to your Checkpoint config or checkpoint_run() method instead.
+  warnings.warn(
+
+[ 2025-12-31 11:42:45,680 ] 141 LocalDataValidator_uci - INFO - Expectation suite built successfully.
+[ 2025-12-31 11:42:45,684 ] 185 LocalDataValidator_uci - INFO - Expectation suite saved successfully
+[ 2025-12-31 11:42:45,686 ] 1467 great_expectations.validator.validator - INFO - 	16 expectation(s) included in expectation_suite.
+[ 2025-12-31 11:42:45,916 ] 197 LocalDataValidator_uci - INFO - Generating Data Docs (HTML report).
+[ 2025-12-31 11:42:46,115 ] 201 LocalDataValidator_uci - INFO - Data Docs available at: file://C:\Users\91798\AppData\Local\Temp\tmpd7hjqyer\index.html
+[ 2025-12-31 11:42:46,115 ] 203 LocalDataValidator_uci - INFO - Generating CSV summary report.
+[ 2025-12-31 11:42:46,119 ] 231 LocalDataValidator_uci - INFO - CSV summary report saved to: F:\Bits\Semester_3\Third Semester\MLOPS\Assignment\Heart-Disease-Prediction-Project\reports\validation\uci_validation_summary.csv
+[ 2025-12-31 11:42:46,119 ] 190 LocalDataValidator_uci - INFO - --- Validation complete for source: uci ---
+[ 2025-12-31 11:42:46,119 ] 251 data_validation_main - INFO - All data validation checks passed successfully.
