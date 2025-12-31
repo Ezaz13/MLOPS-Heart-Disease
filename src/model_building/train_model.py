@@ -52,7 +52,9 @@ EXPERIMENT_NAME = "Heart Disease Prediction"
 REGISTERED_MODEL_NAME = "HeartDiseaseModel"
 
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-mlflow.set_experiment(EXPERIMENT_NAME)
+def init_mlflow():
+    mlflow.set_experiment(EXPERIMENT_NAME)
+
 
 # ------------------------------------------------------------------
 # Data Preparation
@@ -245,4 +247,5 @@ def main():
 
 # ------------------------------------------------------------------
 if __name__ == "__main__":
+    init_mlflow()
     main()
