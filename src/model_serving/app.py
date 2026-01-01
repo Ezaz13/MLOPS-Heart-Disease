@@ -71,66 +71,14 @@ def load_model():
                 r"/app/mlruns/1/models/\1/artifacts",
                 source
             )
-
-
             app.logger.info(f"modified_source: {result}")
-
             model = mlflow.sklearn.load_model(result)
-            #
-            # # Fallback: If source is abstract (e.g. models:/...), fetch the physical path from the run
-            # if "mlruns" not in source and "models:/" in source:
-            #     app.logger.info(f"Source URI is abstract. Fetching run info...")
-            #     run = client.get_run(latest_version.run_id)
-            #     source = run.info.artifact_uri
-            #     app.logger.info(f"Resolved run artifact URI: {source}")
-            #
-            # # Robust path correction for Docker (Windows host -> Linux container)
-            # # 1. Normalize slashes and remove file:// prefix
-            # source_norm = source.replace("\\", "/").replace("file://", "")
-            # app.logger.info(f"source_norm: {source_norm}")
-            # docker_path = None
-            # idx = source_norm.find("mlruns")
-            # app.logger.info(f"idx: {idx}")
-            # if idx != -1:
-            #     # Extract everything after 'mlruns' and join with container path
-            #     rel_path = source_norm[idx + 6:].lstrip("/")
-            #     docker_path = os.path.join("/app/mlruns", rel_path).rstrip("/.")
-            #     app.logger.info(f"docker_path: {docker_path}")
-            #
-            # # Robust Search: Find the actual directory containing 'MLmodel'
-            # final_model_path = None
-            #
-            # # Strategy 1: Check if the constructed path or its subdirectories contain the model
-            # app.logger.info(f"docker_path: {docker_path}")
-            #
-            # if docker_path and os.path.exists(docker_path):
-            #     for root, dirs, files in os.walk(docker_path):
-            #         if "MLmodel" in files:
-            #             final_model_path = root
-            #             break
-            #
-            # # Strategy 2: Search for any directory containing 'MLmodel' that matches this run
-            # if not final_model_path:
-            #     app.logger.info(f"Searching /app/mlruns for MLmodel...")
-            #     for root, dirs, files in os.walk("/app/mlruns"):
-            #         if "MLmodel" in files and (latest_version.run_id in root or "models" in root):
-            #             final_model_path = root
-            #             break
-            #
-            # if final_model_path:
-            #     app.logger.info(f"Loading model from found path: {final_model_path}")
-            #     model = mlflow.sklearn.load_model(final_model_path)
-            # else:
-            #     raise Exception(f"Could not locate MLmodel file for run {latest_version.run_id} in /app/mlruns")
 
         except Exception as e2:
             model = None
             app.logger.error(f"Failed to load model: {e2}")
 
 
-# def model_uri_to_artifact_path(model_uri):
-#     local_path = mlflow.artifacts.download_artifacts(model_uri)
-#     return local_path
 # -------------------------------------------------
 # UI
 # -------------------------------------------------
