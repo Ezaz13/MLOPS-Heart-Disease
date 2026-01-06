@@ -152,8 +152,8 @@ jobs:
 
       - name: Deploy to Kind Kubernetes
         run: |
-          kubectl apply -f k8s/deployment.yaml
-          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8/deployment.yaml
+          kubectl apply -f k8/service.yaml
 
           kubectl set image deployment/heart-disease-app \
             heart-disease-app=${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
