@@ -7,7 +7,7 @@ on:
     branches: [ "main", "master" ]
 
 env:
-  DOCKER_IMAGE_NAME: heart-disease-prediction
+  DOCKER_IMAGE_NAME: heart-disease-app
 
 jobs:
   build-test-train:
@@ -152,7 +152,9 @@ jobs:
 
       - name: Deploy to Kind Kubernetes
         run: |
-          kubectl apply -f k8s/
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+
           kubectl set image deployment/heart-disease-app \
             heart-disease-app=${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
 
