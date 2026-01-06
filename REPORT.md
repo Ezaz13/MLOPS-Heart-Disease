@@ -12,262 +12,257 @@
 | 5 | M. MOHIT SHARMA | 2023ac05887 | 100% |
 
 
-## 1. Project Introduction & Problem Statement
+## 1. Setup/Install Instructions
 
-### 1.1 Background
-Cardiovascular diseases (CVDs) are the leading cause of death globally. Early detection and diagnosis are paramount for effective treatment and patient survival. Traditional diagnostic methods often rely on the subjective analysis of a doctor, which can be time-consuming and prone to human error. Machine Learning (ML) offers a data-driven approach to assist medical professionals by analyzing complex patterns in clinical data to predict the presence of heart disease.
+### Prerequisites
+-   **OS**: Windows, macOS, or Linux.
+-   **Tools**: Python 3.9+, Git, Docker Desktop.
 
-### 1.2 Objective
-The primary objective of this project is to build a robust, reproducible, and scalable **End-to-End MLOps Pipeline** for predicting heart disease. Unlike a simple notebook experiment, this project focuses on the engineering challenges of deploying ML in the real world:
--   **Automation**: reducing manual intervention in data processing and training.
--   **Reproducibility**: Ensuring every model version can be traced back to the exact code and data that generated it.
--   **Scalability**: Serving the model via a containerized API that can handle production loads.
--   **Reliability**: Implementing strict data validation and monitoring.
-
-### 1.3 Dataset
-We utilize the **UCI Heart Disease Dataset** (Cleveland database). This dataset serves as a benchmark in the ML community, containing patient attributes such as age, cholesterol levels, and exercise-induced angina, to predict the presence of heart disease (angiographic disease status).
-
----
-
-## 2. Setup/Install Instructions
-
-### 2.1 Prerequisites
-To ensure a consistent development environment, the following tools are required:
--   **Operating System**: Windows 10/11, macOS, or Linux.
--   **Language**: Python 3.9 or higher.
--   **Version Control**: Git.
--   **Containerization**: Docker Desktop.
-
-### 2.2 detailed Installation Guide
-1.  **Clone the Repository**:
+### Step-by-Step Guide
+1.  **Clone the Repository**
     ```bash
     git clone https://github.com/Ezaz13/MLOPS-Heart-Disease.git
     cd Heart-Disease-Prediction-Project
     ```
 
-2.  **Environment Setup**:
-    It is critical to use a virtual environment to avoid dependency conflicts.
+2.  **Environment Setup**
     ```bash
     python -m venv venv
-    # Activate on Windows
+    # Windows
     venv\Scripts\activate
-    # Activate on Unix/macOS
+    # Unix
     source venv/bin/activate
     ```
 
-3.  **Install Dependencies**:
+3.  **Install Requirements**
     ```bash
     pip install -r requirements.txt
     ```
 
-### 2.3 Running the MLOps Pipeline
-The entire lifecycle (Data Ingestion $\rightarrow$ Model Registration) is orchestrated via a single entry point. This script uses **Prefect** to manage task dependencies and retry logic.
-
-```bash
-python src/data_pipeline_orchestrator/pipeline.py
-```
-
-**Pipeline Execution Flow**:
-1.  **Ingestion**: Downloads data from UCI.
-2.  **Validation**: Checks data schemas with Great Expectations.
-3.  **Preparation**: Cleans and imputes data.
-4.  **Transformation**: Generates medical features.
-5.  **Training**: Trains models and registers the best one in MLflow.
-
-### 2.4 Serving the Model
-To start the production-grade Flask API locally:
-```bash
-python src/model_serving/app.py
-```
-
-### 2.5 Validation & Testing
-We provide tools to verify the deployment:
--   **Batch Test**: `python src/model_serving/validate_deployment.py` tests multiple patient profiles (High Risk, Low Risk, Edge Cases).
--   **Single Request**:
+4.  **Run End-to-End Pipeline**
+    Execute the full pipeline (Ingestion -> Validation -> Preparation -> Transformation -> Model Building):
     ```bash
-    curl -X POST http://localhost:5000/predict -d '{"age":63, "sex":1, "cp":3, "trestbps":145, "chol":233, "fbs":1, "restecg":0, "thalach":150, "exang":0, "oldpeak":2.3, "slope":0, "ca":0, "thal":1}'
+    python src/data_pipeline_orchestrator/pipeline.py
     ```
+    **Pipeline Flow**:
+    The script executes the following DAG sequentially, waiting for each task to complete:
+    1.  **Data Ingestion** (`src/data_ingestion/ingestion.py`):
+        -   Downloads the dataset directly from the UCI Machine Learning Repository URL.
+        -   Implements retry logic (3 attempts) to handle network instability.
+        -   Saves the raw CSV to `data/raw/uci` with a timestamp.
+    2.  **Data Validation** (`src/data_validation/validation.py`):
+        -   Uses **Great Expectations** to validate the downloaded data against a defined schema.
+        -   Checks column order, non-null constraints for critical fields (`age`, `sex`, `target`), and value ranges (e.g., `age` between 20-100).
+        -   Generates validation reports and raises an error if integrity checks fail.
+    3.  **Data Preparation** (`src/data_preparation/preparation.py`):
+        -   Handles data cleaning (replacing '?' with NaN).
+        -   Normalizes the target variable to binary (0/1).
+        -   Generates comprehensive EDA reports (histograms, boxplots, correlation matrices).
+        -   **Output Location**: All EDA artifacts are saved to `artifacts/eda/eda_run_<timestamp>/`.
+        -   Performs initial preprocessing: Imputes missing values, scales numerical features (`StandardScaler`), and One-Hot Encodes categorical variables.
+        -   Saves the processed dataset to `data/prepared`.
+    4.  **Data Transformation** (`src/data_transformation/transformation.py`):
+        -   Loads the prepared data and performs Feature Engineering.
+        -   Creates derived features:
+            -   **Rate Pressure Product**: `thalach` * `trestbps`.
+            -   **Age Groups**: Quantile binning of age ranges.
+            -   **High Risk Flag**: Composite indicator based on `oldpeak` and `ca` thresholds.
+        -   Saves the augmented dataset to `data/transformed`.
+    5.  **Model Building** (`src/model_building/train_model.py`):
+        -   Loads the transformed dataset.
+        -   Splits data into training and testing sets (Stratified Split).
+        -   Defines a training pipeline (including redundant scaling/encoding for robustness).
+        -   Trains/Evaluates three models (Logistic Regression, Random Forest, Gradient Boosting).
+        -   Logs all params, metrics, and artifacts to **MLflow** and registers the best model.
 
----
+5.  **Start API Server**
+    ```bash
+    python src/model_serving/app.py
+    ```
+7.  **Validate Deployment**
+    Ensure the service is running correctly using the provided validation script or UI:
+    -   **CLI Test (Batch)**: Run the batch validation script to test multiple scenarios against the API.
+        ```bash
+        python src/model_serving/validate_deployment.py
+        ```
+    -   **CLI Test (Single Request)**:
+        ```bash
+        curl -X POST http://localhost:5000/predict -d '{"age":63, "sex":1, "cp":3, "trestbps":145, "chol":233, "fbs":1, "restecg":0, "thalach":150, "exang":0, "oldpeak":2.3, "slope":0, "ca":0, "thal":1}'
+        ```
+    -   **UI Test**: Open a browser and navigate to:
+        ```
+        http://localhost:5000/
+        ```
+        This loads `index.html`, where you can manually input patient data and get real-time predictions.
 
-## 3. Data Dictionary & Pipeline Details
+## 2. EDA and Modelling Choices
 
-### 3.1 Data Dictionary
-Understanding the data is crucial for both modeling and medical interpretation.
+### Exploratory Data Analysis (EDA)
+The data preparation pipeline (`src/data_preparation/preparation.py`) generates comprehensive analysis reports to guide feature engineering.
 
-| Feature | Description | Type | Key Values / Range |
-| :--- | :--- | :--- | :--- |
-| `age` | Patient's age in years | Numerical | 29 - 77 |
-| `sex` | Biological Sex | Categorical | 0 = Female, 1 = Male |
-| `cp` | Chest Pain Type | Categorical | 1 = Typical Angina, 2 = Atypical Angina, 3 = Non-anginal, 4 = Asymptomatic |
-| `trestbps` | Resting Blood Pressure (mm Hg) | Numerical | 94 - 200 |
-| `chol` | Serum Cholesterol (mg/dl) | Numerical | 126 - 564 |
-| `fbs` | Fasting Blood Sugar > 120 mg/dl | Categorical | 0 = False, 1 = True (Diabetic indicator) |
-| `restecg` | Resting ECG Results | Categorical | 0 = Normal, 1 = ST-T wave abnormality, 2 = Left ventricular hypertrophy |
-| `thalach` | Maximum Heart Rate Achieved | Numerical | 71 - 202 |
-| `exang` | Exercise Induced Angina | Categorical | 0 = No, 1 = Yes |
-| `oldpeak` | ST depression induced by exercise relative to rest | Numerical | 0.0 - 6.2 (Indicates ischemia) |
-| `slope` | Slope of the peak exercise ST segment | Categorical | 1 = Upsloping, 2 = Flat, 3 = Downsloping |
-| `ca` | Number of major vessels colored by flourosopy | Numerical | 0 - 3 |
-| `thal` | Thalassemia | Categorical | 3 = Normal, 6 = Fixed Defect, 7 = Reversible Defect |
-| `target` | Diagnosis of Heart Disease | Target | 0 = No Disease, 1-4 = Disease Present |
+-   **Artifact Location**: All EDA outputs are automatically saved to:
+    `artifacts/eda/eda_run_<YYYYMMDD_HHMMSS>/`
+-   **Generated Insights**:
+    1.  **Summary Statistics**: saved as `summary_statistics.csv`.
+    2.  **Distributions**: Histograms showing the distribution of numerical features (like `age`, `chol`) segmented by the target variable (Disease vs. No Disease).
+    3.  **Outlier Detection**: Boxplots for numerical features to identify anomalies.
+    4.  **Categorical Analysis**: Count plots for features like `cp` (chest pain) and `exang` (exercise angina).
+    5.  **Correlation Analysis**: A heatmap (`numeric_correlation_heatmap.png`) visualizing relationships between features.
+-   **Key Findings**:
+    -   **Target Balance**: The dataset is balanced, eliminating the immediate need for SMOTE.
+    -   **Predictive Features**: `cp` (Type 3) and `oldpeak` showed strong differentiation between positive/negative cases.
 
-### 3.2 Detailed Pipeline Stages
+### Preprocessing Pipeline
+To ensure robust model training, the following transformations are applied:
+1.  **Missing Value Imputation**: Median for numerical columns, Mode for categorical.
+2.  **Scaling**: `StandardScaler` to normalize numerical features (`age`, `chol`, etc.).
+3.  **Encoding**: One-Hot Encoding for categorical variables.
 
-#### Stage 1: Robust Data Ingestion (`ingestion.py`)
--   **Source**: Downloads directly from the UCI repository archives.
--   **Reliability**: Implements a `retry` mechanism (3 attempts with backoff) to handle transient network failures.
--   **Versioning**: Files are saved with a timestamp (`heart_disease_dataset_YYYYMMDD_HHMMSS.csv`) to ensure we never overwrite raw data, enabling point-in-time recovery.
+### Modelling Methodology
+We evaluated three diverse algorithms using **Stratified K-Fold Cross-Validation (K=5)** to ensure the model generalizes well to unseen data.
 
-#### Stage 2: Quality Assurance with Great Expectations (`validation.py`)
-We employ Great Expectations (GX) to enforce a strict **Data Contract** between the ingestion and modeling layers. This prevents "silent failures" where bad data flows downstream without raising an error.
+#### Model Performance Comparison
 
--   **The Data Contract**:
-    -   The pipeline expects exact adherence to the schema defined in `heart_disease_suite`.
-    -   **Schema Integrity**: `expect_table_columns_to_match_ordered_list` ensures strictly ordered 14 columns.
--   **Statistical Guardrails & Logic**:
-    -   **Age**: Validated to be medically realistic (`20` to `100`).
-    -   **Blood Pressure (`trestbps`)**: Must be within survivable range `80-250`.
-    -   **Categorical Integrity**: `sex` must be `{0, 1}`, `cp` must be `{1, 2, 3, 4}`.
--   **Automated Documentation (Data Docs)**:
-    -   Every validation run generates a human-readable HTML report within `reports/`.
-    -   This provides a persistent **Audit Trail**, allowing stakeholders to see exactly *why* a pipeline run failed (e.g., "Age column contained value '150'").
--   **Action**: If validation fails, the pipeline halts immediately (`sys.exit(1)`), preventing downstream corruption.
-
-#### Stage 3: Data Preparation & Cleaning (`preparation.py`)
--   **Handling Missing Values**: The UCI dataset uses `?` for missing values. These are converted to `NaN`.
--   **Imputation Strategy**:
-    -   **Median** for numerical columns (robust to outliers like high cholesterol).
-    -   **Mode** for categorical columns (most frequent category).
--   **Target Normalization**: The raw target is 0-4. We binarize this to **0 (No Disease)** and **1 (Disease)** to frame the problem as a binary classification task.
--   **Output**: Cleaned data allows for accurate Exploratory Data Analysis (EDA).
-
-#### Stage 4: Feature Engineering (`transformation.py`)
-To improve model performance, we engineered domain-specific medical features:
-1.  **Rate Pressure Product (RPP)**: $RPP = HeartRate \times SystolicBP$.
-    -   *Logic*: A standard index of myocardial oxygen consumption and stress on the heart.
-2.  **Metabolic Indicator**: `chol * fbs`.
-    -   *Logic*: Captures the compounding risk of high cholesterol in diabetic patients.
-3.  **High Risk Flag**: A composite binary flag.
-    -   *Logic*: Identifies patients with both significant ST depression (`oldpeak` > 75th percentile) and blocked vessels (`ca` > 75th percentile), representing advanced arterial blockage.
-
----
-
-## 4. Modeling Methodology & Experiment Tracking
-
-### 4.1 Algorithm Selection
-We trained and evaluated three distinct classes of algorithms to find the best fit:
-1.  **Logistic Regression**: Provides a strong linear baseline and is highly interpretable (odds ratios).
-2.  **Random Forest**: An ensemble method that handles non-linear relationships and feature interactions well without heavy tuning.
-3.  **Gradient Boosting**: Often achieves state-of-the-art performance by sequentially correcting errors.
-
-### 4.2 Training Configuration (`train_model.py`)
-All models were trained using **Stratified K-Fold Cross-Validation (K=5)** to ensure class distribution remains consistent across folds.
--   **Data Balancing**: We used `class_weight='balanced'` for Logistic Regression and Random Forest to penalize misclassifying the minority class.
--   **Scaling**: A pipeline utilizing `StandardScaler` was used to normalize features, critical for Logistic Regression and Gradient Descent convergence.
-
-### 4.3 Evaluation Metric: F1-Score
-We prioritized the **F1-Score** over Accuracy.
--   **Medical Rationale**: In disease prediction, **False Negatives** (missed diagnosis) are dangerous. **False Positives** (unnecessary tests) are costly.
--   The F1-Score balances Precision and Recall. Our goal was to maximize Recall (catch all sick patients) while maintaining acceptable Precision.
-
-### 4.4 Experiment Results (MLflow)
-We utilized MLflow's tracking capabilities to log rich metadata for every run, ensuring that "Experimentation" is not "Chaos".
-
-#### 4.4.1 Tracked Metadata
--   **Tags**: we applied specific tags to organize the experiments:
-    -   `domain="healthcare"`: Allows filtering by business domain.
-    -   `problem_type="binary_classification"`: Helps downstream tools understand the model output format.
--   **Parameters**: Complete hyperparameters configuration (e.g., `class_weight='balanced'`, `n_estimators`, `learning_rate`).
--   **Metrics**: We logged a holistic view of performance: `cv_roc_auc`, `accuracy`, `precision`, `recall`, `f1`, and `roc_auc`.
-
-#### 4.4.2 Comparative Results Table
-| Model | Run ID | CV ROC-AUC | F1 Score | Recall | Config |
+| Model | CV ROC-AUC (Mean) | Test Accuracy | Precision | Recall | F1 Score |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Random Forest** | `...e31d...` | 0.8840 | **0.8814** | **0.9286** | `n_estimators=100`, `max_depth=10` |
-| Logistic Regression | `...1a69...` | **0.9009** | 0.8667 | 0.9286 | `C=0.1`, `solver='liblinear'` |
-| Gradient Boosting | `...d0f4...` | 0.8528 | 0.8667 | 0.9286 | `lr=0.05`, `n_estimators=150` |
+| **Logistic Regression** | **0.9009** | 0.8689 | 0.8125 | **0.9286** | 0.8667 |
+| Random Forest | 0.8840 | **0.8852** | 0.8387 | 0.9286 | **0.8814** |
+| Gradient Boosting | 0.8528 | 0.8689 | 0.8125 | 0.9286 | 0.8667 |
 
-### 4.5 MLflow Lifecycle & Model Registry
 
-The transition from a "Raw Experiment" to a "Production Model" is automated via the **Model Registry**.
+#### Selection Logic
+The automated selection logic (defined in `src/model_building/train_model.py`) prioritizes **F1 Score** as the primary metric for stability, particularly for imbalanced datasets or costs of errors.
 
-1.  **Artifact Preservation**:
-    For every run, we store:
-    -   `model.pkl`: The serialized Scikit-learn pipeline (Preprocessor + Classifier).
-    -   `conda.yaml`: The exact environment definition (dependencies) required to run the model.
-    -   `input_example.json`: A sample of 5 rows from the training data. This acts as a schema contract for the serving API.
+**Why F1 Score?**
+The F1 Score is the harmonic mean of Precision and Recall. In the context of Heart Disease prediction:
+-   **High Recall** is crucial: We must not miss any positive cases (False Negatives), as failing to diagnose a patient could be fatal.
+-   **Precision matters**: We also want to minimize False Positives to avoid unnecessary treatment and anxiety.
+F1 Score provides a single metric that balances these two competing objectives, ensuring the model is robust and reliable for medical diagnosis, rather than just being accurate on the majority class.
 
-2.  **Champion Selection Logic**:
-    The generic `train_model.py` script removes human bias from the selection process:
-    -   It iterates through all training runs.
-    -   It compares the **F1-Score** of each model.
-    -   The model with the highest F1-Score is identified as the "Champion".
+> **Selected Model: Random Forest**
+>
+> **Random Forest** was selected because it achieved the highest **F1 Score (0.8814)**. This balanced metric ensures that the model maintains a good trade-off between Precision and Recall, which is critical for medical diagnosis where both false positives and false negatives carry significant costs. Additionally, it maintained a high Test Accuracy (0.8852) and strong Recall (0.9286).
 
-3.  **Registration**:
-    The Champion model is programmatically registered to the MLflow Model Registry under the name `HeartDiseaseModel`. This provides a stable URI (`models:/HeartDiseaseModel/Production`) for the deployment services to consume, decoupling training from serving.
+## 3. Experiment Tracking Summary
 
----
+We successfully integrated **MLflow** to track the entire machine learning lifecycle, ensuring reproducibility and observability.
 
-## 5. MLOps Infrastructure & Deployment
+### 3.1 Configuration & Setup
+-   **Backend Store**: SQLite (`sqlite:///mlflow.db`) for lightweight local metadata storage.
+-   **Artifact Store**: Local directory `mlruns/` for storing models and plots.
+-   **Experiment Name**: `Heart Disease Prediction`
 
-### 5.1 CI/CD Pipeline (GitHub Actions)
-We implemented a "Quality Gate" philosophy in `.github/workflows/ci_cd_pipeline.yml`. No code reaches production without passing these gates:
-1.  **Strict Linting (`flake8`)**:
-    -   Enforces a max line length of 127.
-    -   Blocks build on syntax errors (`E9`, `F63`, `F7`, `F82`).
-    -   *Philosophy*: Code must be readable and error-free before testing begins.
-2.  **Unit Tests (`pytest`)**:
-    -   Discovers and runs all tests in the `tests/` directory.
-    -   Ensures individual functions (like data cleaning logic) work as expected.
-3.  **Integration Pipeline**:
-    -   Executes the orchestrator (`pipeline.py`).
-    -   Validates that the `ingestion -> validation -> training` flow is unbroken.
-4.  **Artifact Archival (Audit Trail)**:
-    -   **`mlflow-runs`**: Preserves the exact experiment logs.
-    -   **`validation-reports`**: Saves Great Expectations output proof.
-    -   **Policy**: Artifacts are uploaded `if: always()`, meaning even failed runs generates logs for debugging.
+### 3.2 Tracked Metrics & Parameters
+For each training iteration, the following were logged:
+-   **Hyperparameters**: Model-specific configs (e.g., Logistic Regression `C=0.1`, Random Forest `n_estimators=100`).
+-   **Performance Metrics**:
+    -   Primary: **CV ROC-AUC** (Used for selection).
+    -   Secondary: Recall (Critical for healthcare), Precision, F1-Score, and Accuracy.
+-   **Tags**: Metadata for searchability:
+    -   `domain`: "healthcare"
+    -   `problem_type`: "binary_classification"
 
-### 5.2 Containerization Strategy
-Our `Dockerfile` is optimized for security and size:
--   **Base Image**: `python:3.10-slim` (Selected for minimal attack surface vs full Alpine compatibility issues).
--   **Optimizations**:
-    -   `PYTHONDONTWRITEBYTECODE=1`: Prevents `.pyc` files, keeping the container clean.
-    -   `PYTHONUNBUFFERED=1`: Ensures logs are flushed immediately to stdout for real-time monitoring.
-    -   **Dependency Cleanup**: `apt-get install ... && rm -rf /var/lib/apt/lists/*` keeps the layer size down.
--   **Environment**: Sets `MLFLOW_TRACKING_URI` to use the local SQLite database within the container.
--   **Entrypoint**: Launches the Flask application on port 5000.
+### 3.3 Recorded Runs (Sample)
+Based on the latest experiment cycle:
 
-### 5.3 Kubernetes Architecture
-The application is designed to be cloud-native:
-\```mermaid
+| Model | Run ID | Status | Key Result |
+| :--- | :--- | :--- | :--- |
+| **Random Forest** | `57ecee26e31d450d8e4f3e7ed35781ab` | **Registered** | **Highest F1 Score (0.8814)** |
+| Logistic Regression | `1ba457450f2641a69d41a89a44639546` | Archived | F1 Score: 0.8667 |
+| Gradient Boosting | `ea2881acdae34c1fad7cb07d78d0f4fb` | Archived | F1 Score: 0.8667 |
+
+### 3.4 Model Registry & Artifacts
+-   **Artifacts Preserved**:
+    -   `model.pkl`: The serialized Scikit-learn pipeline.
+    -   `MLmodel`: Metadata defining the model flavor and dependencies.
+    -   `conda.yaml` / `requirements.txt`: Environment definitions for reproduction.
+    -   `input_example.json`: A sample of the training data (first 5 rows) to validate schema during serving.
+
+-   **Registration Strategy**:
+    The training script automatically compares the `f1_score` of all candidates. The model with the highest score (Random Forest) was programmatically registered in the MLflow Model Registry as:
+    -   **Model Name**: `HeartDiseaseModel`
+    -   **Version**: `2`
+    -   **Stage**: Ready for Production / Deployment.
+
+## 4. Architecture Diagram
+
+The system follows a microservices architecture pattern with offline training and online serving.
+
+```mermaid
 graph TD
-    LB[Load Balancer] --> Svc[K8s Service]
-    Svc --> Pod1[Replica 1]
-    Svc --> Pod2[Replica 2]
-    Svc --> Pod3[Replica 3]
-    subgraph "Pod Internals"
-        Pod1 --> Flask[Flask App]
-        Flask --> Model[Loaded Model]
+    subgraph "Data Pipeline Orchestrator"
+        Ingest[Data Ingestion<br/>(ingestion.py)] --> Validate[Data Validation<br/>(validation.py)]
+        Validate --> Prep[Data Preparation<br/>(preparation.py)]
+        Prep --> Transform[Data Transformation<br/>(transformation.py)]
+        Transform --> Train[Model Building<br/>(train_model.py)]
     end
-\```
--   **High Availability Deployment**:
-    -   **Replicas**: `2` (Ensures zero downtime if one pod fails).
-    -   **Resource Limits**:
-        -   **Requests**: `128Mi` RAM, `100m` CPU (Guaranteed minimums).
-        -   **Limits**: `512Mi` RAM, `500m` CPU (Prevents “noisy neighbor” issues).
--   **Self-Healing (Probes)**:
-    -   **Liveness**: Checks `/health` every 20s. Restarts pod if dead.
-    -   **Readiness**: Checks `/health` every 10s. Removes pod from LoadBalancer if not ready to serve traffic.
--   **Service Exposure**:
-    -   **Type**: `LoadBalancer`.
-    -   **Port Mapping**: External Port `5000` $\rightarrow$ Container Port `5000`.
--   **Observability**:
-    -   **ServiceMonitor**: Configured to scrape metrics from `/metrics` every `15s` for Prometheus integration.
 
----
+    subgraph "MLOps Infrastructure"
+        Train -->|Log Metrics & Model| MLflow[MLflow Tracking<br/>(SQLite/Local)]
+        MLflow -->|Register Best Model| Registry[Model Registry]
+    end
 
-## 6. Project Resources
+    subgraph "Production Deployment"
+        Registry -->|Load Model| App[Flask Service<br/>(app.py)]
+        App -->|Containerize| Docker[Docker Image]
+        Docker -->|Deploy| K8s[Kubernetes Cluster]
+        K8s -->|Expose| API[REST API]
+    end
 
--   **Code Repository**: [https://github.com/Ezaz13/MLOPS-Heart-Disease.git](https://github.com/Ezaz13/MLOPS-Heart-Disease.git)
--   **Application Demo Video**: [Watch Recording](https://wilpbitspilaniacin0-my.sharepoint.com/:v:/g/personal/2024aa05083_wilp_bits-pilani_ac_in/IQByKQZjA01pTZDbOenZWesFAWihpS3Pcps-bkGT9a37-tg?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=2EyaNt)
+    User[End User] -->|POST Predictions| API
+```
+
+## 5. CI/CD and Deployment Workflow
+
+### CI/CD Pipeline
+Managed via **GitHub Actions** (`.github/workflows/ci_cd_pipeline.yml`).
+-   **Trigger**: Push or Pull Request to branches `main` or `master`.
+-   **Jobs**:
+
+    #### 1. Build, Test, and Train (`build-test-train`)
+    -   **Environment**: Ubuntu runner with Python 3.9.
+    -   **Linting**: Uses `flake8` to enforce PEP8 standards (max line length: 127).
+    -   **Unit Testing**: Executes `pytest` on the `tests/` directory.
+    -   **Pipeline Execution**: Runs `src/data_pipeline_orchestrator/pipeline.py` to execute data ingestion, validation, transformation, and model training.
+    -   **Artifact Archival**: Uploads critical artifacts for subsequent jobs:
+        -   `mlflow-runs` and `mlflow.db`: Preserves the trained model and tracking database.
+        -   `model-performance-report`: Markdown summary.
+        -   `validation-reports`: Data quality checks.
+        -   `pipeline-logs`: Execution logs.
+
+    #### 2. Docker Build & Push (`docker-build-push`)
+    -   **Condition**: Runs only on `push` events.
+    -   **Artifact Retrieval**: Downloads `mlflow-runs` and `mlflow.db` from the build job to include the trained model in the image.
+    -   **Build**: Uses Docker Buildx to build the image from the `Dockerfile`.
+    -   **Push**: Pushes the image to Docker Hub tagged with `latest` and the commit SHA.
+
+    #### 3. Kubernetes Deployment Test (`deploy-k8s-kind`)
+    -   **Condition**: Runs only on `push` events.
+    -   **Environment**: Sets up a **Kind (Kubernetes in Docker)** cluster directly on the runner.
+    -   **Deployment**:
+        -   Pulls the newly built image.
+        -   Loads the image into the Kind cluster.
+        -   Applies `k8/deployment.yaml` and `k8/service.yaml`.
+        -   Updates the deployment to use the specific image version (SHA).
+    -   **Verification**: Waits for the rollout to complete (`kubectl rollout status`) and logs cluster status.
+
+### Deployment Configuration
+-   **Containerization** (`Dockerfile`):
+    -   **Base Image**: `python:3.10-slim`.
+    -   ** Configuration**: Sets `MLFLOW_TRACKING_URI` to `sqlite:////app/mlflow.db`.
+    -   **Exposed Port**: 5000.
+    -   **Entrypoint**: Starts the Flask application (`src/model_serving/app.py`).
+
+-   **Orchestration** (`k8/` directory):
+    -   **Deployment** (`deployment.yaml`): Manages application replicas for high availability and defines resource constraints.
+    -   **Service** (`service.yaml`): Exposes the application to external traffic using a LoadBalancer strategy.
+    -   **Monitoring** (`service-monitor.yaml`): Configures Prometheus scraping for real-time metrics.
+
+## 6. Link to Code Repository
+
+[https://github.com/Ezaz13/MLOPS-Heart-Disease.git](https://github.com/Ezaz13/MLOPS-Heart-Disease.git)
+
+
+## 6. Link to Application walkthrough recording
+
+https://wilpbitspilaniacin0-my.sharepoint.com/:v:/g/personal/2024aa05083_wilp_bits-pilani_ac_in/IQByKQZjA01pTZDbOenZWesFAWihpS3Pcps-bkGT9a37-tg?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=2EyaNt
